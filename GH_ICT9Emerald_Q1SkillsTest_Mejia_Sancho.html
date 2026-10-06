@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBMC Robotics Club Application</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #aeb8bf;
+            font-family: "Courier New", monospace;
+            color: #222;
+            overflow-x: hidden;
+        }
+
+        .robot-background {
+            position: fixed;
+            z-index: 0;
+            top: 0;
+            right: -100px;
+            width: 68vw;
+            height: 100vh;
+            object-fit: contain;
+            object-position: right center;
+            pointer-events: none;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 22px 0 80px 4.3%;
+        }
+
+        .form-box {
+            width: 530px;
+            min-height: 850px;
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 35px;
+        }
+
+        .school-logo {
+            display: block;
+            width: 75px;
+            height: auto;
+            margin: 0 auto 28px auto;
+        }
+
+        h1 {
+            color: #075890;
+            text-align: center;
+            font-size: 24px;
+            line-height: 1.2;
+            text-decoration: underline;
+            margin: 0 0 42px 0;
+        }
+
+        p {
+            font-size: 13px;
+            line-height: 1.25;
+        }
+
+        label {
+            display: block;
+            color: #222;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 19px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #c7c7c7;
+            border-radius: 3px;
+            background-color: white;
+            font-family: "Courier New", monospace;
+            font-size: 13px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border: 2px solid #075890;
+        }
+
+        textarea {
+            height: 64px;
+            resize: vertical;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .radio-group label,
+        .checkbox-group label {
+            display: inline-block;
+            font-weight: normal;
+            margin: 0 12px 0 0;
+        }
+
+        .activities {
+            margin-top: 40px;
+        }
+
+        .activities h2,
+        .links h2 {
+            color: #075890;
+            text-align: center;
+            font-size: 15px;
+            margin: 0 0 12px 0;
+        }
+
+        .activities ul {
+            padding-left: 18px;
+            margin-top: 0;
+            font-size: 12px;
+        }
+
+        .links {
+            margin-top: 14px;
+        }
+
+        .links ol {
+            padding-left: 20px;
+            margin-top: 0;
+            font-size: 12px;
+        }
+
+        a {
+            color: #07629f;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            display: block;
+            margin: 14px auto 0 auto;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 4px;
+            background-color: #0762a6;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #054878;
+        }
+
+        #result {
+            color: #075890;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        footer {
+            position: fixed;
+            z-index: 2;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            color: #444;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        @media screen and (max-width: 900px) {
+            .robot-background {
+                width: 62vw;
+                opacity: 0.5;
+            }
+
+            .form-box {
+                width: 500px;
+            }
+        }
+
+        @media screen and (max-width: 650px) {
+            .robot-background {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 100%;
+                height: 390px;
+                object-fit: contain;
+                opacity: 0.25;
+            }
+
+            .page {
+                padding: 15px;
+            }
+
+            .form-box {
+                width: 100%;
+                min-height: auto;
+                padding: 25px;
+            }
+
+            footer {
+                position: static;
+                margin-top: 15px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <img
+        class="robot-background"
+        src="https://thumbs.dreamstime.com/b/robotic-arm-showing-rock-sign-29298149.jpg"
+        alt="Robotic arm showing a rock sign"
+    >
+
+    <div class="page">
+
+        <div class="form-box">
+
+            <img
+    class="school-logo"
+    src="https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tgDmbn76sQa8xcGVDuG0w0ilCnfloibAcHAXgHu0rJcPkcX80BRgWfIocc1razsm4doFBWuv9NhsVqKQjYYHusR3n7y5TPss-73jgIgeDQFP3VLcmOC9LldhTTE7VMzOpavEEyQ1ieaPEecbrJK1kVUAWIDK1w2mFtS_NUiYQpEcVwxEfVfsv3ubTOELbQb9bxi80MNkva7ccUoEjXeeHQRSpKSW8S5YQ9kOGsvjfZrGxi9T1R8kr6GpA4kUuseXQPpHEgJYBGQMmDeToh3zme9mPcBUK2bLR3UzfGPcqa8QkJQXDpmeBAxQGAwQe_w9I=w2880-h1498-rw"
+    alt="OBMC school logo"
+            >
+
+            <h1>
+                OBMC Robotics Club<br>
+                Application Form
+            </h1>
+
+            <p>
+                Welcome! Please fill out this form to apply for our school's
+                <i>Robotics Club.</i>
+            </p>
+
+            <form id="roboticsForm">
+
+                <label for="fullname">Full Name:</label>
+                <input
+                    type="text"
+                    id="fullname"
+                    name="fullname"
+                    required
+                >
+
+                <label for="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                >
+
+                <label for="grade">Grade Level:</label>
+                <select id="grade" name="grade">
+                    <option value="Grade 7">Grade 7</option>
+                    <option value="Grade 8">Grade 8</option>
+                    <option value="Grade 9">Grade 9</option>
+                    <option value="Grade 10">Grade 10</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
+                </select>
+
+                <label>Gender:</label>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="gender" value="Male">
+                        Male
+                    </label>
+
+                    <label>
+                        <input type="radio" name="gender" value="Female">
+                        Female
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="Prefer not to say"
+                        >
+                        Prefer not to say
+                    </label>
+                </div>
+
+                <label>What are your skills?</label>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="skills" value="Coding">
+                        Coding
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="skills" value="Design">
+                        Design
+                    </label>
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="skills"
+                            value="Electronics"
+                        >
+                        Electronics
+                    </label>
+                </div>
+
+                <label for="reason">
+                    Tell us why you want to join:
+                </label>
+
+                <textarea
+                    id="reason"
+                    name="reason"
+                    required
+                ></textarea>
+
+                <div class="activities">
+                    <h2>Top Robotics Activities We Offer:</h2>
+
+                    <ul>
+                        <li>Line Following Robots</li>
+                        <li>Obstacle Avoidance Programming</li>
+                        <li>Light Following Robot</li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <h2>Helpful Links:</h2>
+
+                    <ol>
+                        <li>
+                            <a
+                                href="https://www.robotics.org"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Robotics.org
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="https://www.firstinspires.org/robotics/frc"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                FIRST Robotics
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+
+                <button type="submit">
+                    Submit Application
+                </button>
+
+                <p id="result"></p>
+
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 Robotics Club Application |
+        Created by [Your Name &amp; Section]
+    </footer>
+
+    <script>
+        var form = document.getElementById("roboticsForm");
+        var result = document.getElementById("result");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var name = document.getElementById("fullname").value;
+
+            result.textContent =
+                "Thank you, " + name + "! Your application was submitted.";
+
+            form.reset();
+        });
+    </script>
+
+</body>
+</html>
